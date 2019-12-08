@@ -1,8 +1,5 @@
 package com.dragon.datax.mapper;
 
-import com.iflytek.digitalpark.datacenter.datax.model.DataSourceModel;
-
-import java.util.List;
 
 /**
  * @ClassName DsMapper

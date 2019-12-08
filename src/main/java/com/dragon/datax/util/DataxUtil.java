@@ -1,7 +1,5 @@
 package com.dragon.datax.util;
 
-import com.iflytek.digitalpark.commons.utils.taskcenter.model.DataOperResult;
-
 import java.text.SimpleDateFormat;
 import java.util.List;
 

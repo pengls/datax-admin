@@ -191,15 +191,4 @@ public class SFTPUtil {
         dataOperResult.setOperResult(returnCode + "");
         return dataOperResult;
     }
-
-
-
-    public static void main(String[] args) throws IOException, JSchException, SftpException {
-        SFTPUtil sftpUtil = new SFTPUtil("10.0.8.13", "root", "JSZX!@#321",
-                22);
-        sftpUtil.connect();
-        DataOperResult dataOperResult = sftpUtil.execCmd("python /iflytek/datax/bin/datax.py /iflytek/datax/job/test/vehicle_sys_dict_full.json");
-        System.out.println(JSON.toJSONString(dataOperResult));
-        sftpUtil.close();
-    }
 }

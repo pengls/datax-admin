@@ -1,6 +1,6 @@
 package com.dragon.datax.mapper;
 
-import com.iflytek.digitalpark.datacenter.datax.model.NodeModel;
+import com.dragon.datax.model.NodeModel;
 
 import java.util.List;
 

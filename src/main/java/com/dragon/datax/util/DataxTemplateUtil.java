@@ -1,9 +1,6 @@
 package com.dragon.datax.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.iflytek.digitalpark.datacenter.datax.mapper.DsMapper;
-import com.iflytek.digitalpark.datacenter.datax.model.DataSourceModel;
-import com.iflytek.digitalpark.datacenter.datax.model.DataxRDBMSConfigModel;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

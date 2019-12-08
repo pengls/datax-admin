@@ -1,10 +1,7 @@
 package com.dragon.datax.util.db;
 
-import com.alibaba.druid.util.JdbcUtils;
-import com.iflytek.digitalpark.datacenter.datax.model.DataSourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;

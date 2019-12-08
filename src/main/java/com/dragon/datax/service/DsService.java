@@ -1,12 +1,5 @@
 package com.dragon.datax.service;
 
-import com.alibaba.druid.util.JdbcUtils;
-import com.iflytek.digitalpark.commons.vo.BaseResult;
-import com.iflytek.digitalpark.commons.vo.ObjectResult;
-import com.iflytek.digitalpark.datacenter.datax.mapper.DsMapper;
-import com.iflytek.digitalpark.datacenter.datax.model.DataSourceModel;
-import com.iflytek.digitalpark.datacenter.datax.util.db.DBHandle;
-import com.iflytek.digitalpark.datacenter.datax.util.db.JDBCConnect;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

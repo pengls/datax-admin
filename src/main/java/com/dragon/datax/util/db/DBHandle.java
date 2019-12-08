@@ -1,7 +1,6 @@
 package com.dragon.datax.util.db;
 
 import com.alibaba.fastjson.JSON;
-import com.iflytek.digitalpark.datacenter.datax.model.DataSourceModel;
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
