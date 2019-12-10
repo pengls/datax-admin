@@ -1,15 +1,17 @@
 package com.dragon.datax.controller;
 
-import com.dragon.datax.model.DataSourceModel;
-import com.dragon.datax.service.DsService;
+import cn.hutool.core.util.IdUtil;
+import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.toolkit.JdbcUtils;
+import com.dragon.boot.common.model.Result;
+import com.dragon.datax.model.Dts;
+import com.dragon.datax.service.DtsService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassName DtController
@@ -18,33 +20,43 @@ import java.util.Map;
  * @Description 数据源管理
  * @Version 1.0
  */
-@Controller
+@RestController
 @RequestMapping("dts")
 public class DtsController {
     @Autowired
-    private DsService dsService;
+    private DtsService dtsService;
 
     /**
      * 列表
      * @return
      */
     @PostMapping(value="/list")
-    public Map<String, List<DataSourceModel>> list(){
-        List<DataSourceModel> list =  dsService.findAll();
-        Map<String, List<DataSourceModel>> resultMap = new HashMap<>(1);
+    public Map<String, List<Dts>> list(){
+        List<Dts> list =  dtsService.list(new QueryWrapper<Dts>().lambda().orderByDesc(Dts::getCreateTime));
+        Map<String, List<Dts>> resultMap = new HashMap<>(1);
         resultMap.put("data" , list);
         return resultMap;
     }
 
     /**
      * 保存
-     * @param dataSourceModel
+     * @param dts
      * @return
      */
     @PostMapping(value = "/save")
-    @ResponseBody
-    public BaseResult save(@ModelAttribute DataSourceModel dataSourceModel){
-        return dsService.save(dataSourceModel);
+    public Result save(@ModelAttribute Dts dts){
+        DbType dbType = JdbcUtils.getDbType(dts.getJdbcUrl());
+        if(DbType.OTHER.equals(dbType)){
+            return new Result(false, -1, "JDBC URL无法识别");
+        }
+        dts.setDbType(dbType.getDb());
+
+        if(StringUtils.isBlank(dts.getId())){
+            dts.setId(IdUtil.fastSimpleUUID());
+            dts.setCreateTime(new Date());
+        }
+
+        return new Result(dtsService.saveOrUpdate(dts));
     }
 
     /**
@@ -53,9 +65,8 @@ public class DtsController {
      * @return
      */
     @PostMapping(value = "/del")
-    @ResponseBody
-    public BaseResult del(@RequestParam String dsIds){
-        return dsService.del(dsIds);
+    public Result del(@RequestParam String dsIds){
+        return new Result(dtsService.removeByIds(Arrays.asList(dsIds.split(","))));
     }
 
     /**
@@ -65,8 +76,8 @@ public class DtsController {
      */
     @PostMapping(value = "/test")
     @ResponseBody
-    public BaseResult testDts(String dsId){
-        return dsService.testDts(dsId);
+    public Result testDts(String dsId){
+        return dtsService.testDts(dsId);
     }
 
     /**
@@ -75,9 +86,8 @@ public class DtsController {
      * @return
      */
     @PostMapping(value = "/tables")
-    @ResponseBody
-    public BaseResult getTablesByDsId(@RequestParam String dsId){
-        return dsService.getTablesByDsId(dsId);
+    public Result getTablesByDsId(@RequestParam String dsId){
+        return dtsService.getTablesByDsId(dsId);
     }
 
     /**
@@ -87,8 +97,8 @@ public class DtsController {
      */
     @PostMapping(value = "/columns")
     @ResponseBody
-    public BaseResult getColumnsByTableName(@RequestParam String dsId, @RequestParam String tableName){
-        return dsService.getColumnsByTableName(dsId, tableName);
+    public Result getColumnsByTableName(@RequestParam String dsId, @RequestParam String tableName){
+        return dtsService.getColumnsByTableName(dsId, tableName);
     }
 
 }

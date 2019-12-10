@@ -2,12 +2,20 @@ package com.dragon.datax.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.dragon.boot.common.model.Result;
+import com.dragon.datax.dto.DataxRDBMSConfigDto;
+import com.dragon.datax.model.Task;
+import com.dragon.datax.service.DtsService;
+import com.dragon.datax.service.NodeService;
+import com.dragon.datax.service.TaskService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,93 +27,75 @@ import java.util.Map;
  * @Description Datax任务管理
  * @Version 1.0
  */
-@Controller
+@RestController
 @RequestMapping("task")
 public class TaskController {
     @Autowired
     private TaskService taskService;
-    @Autowired
-    private DsService dsService;
-    @Autowired
-    private NodeService nodeService;
-
-    @RequestMapping("")
-    public String index(Model model, HttpSession session){
-        /**
-         * 获取数据源列表
-         */
-        List<DataSourceModel> dtslist = dsService.findAll();
-        model.addAttribute("dtslist", dtslist);
-        /**
-         * 获取节点列表
-         */
-        List<NodeModel> nodeList = nodeService.findAll();
-        model.addAttribute("nodelist", nodeList);
-
-        return "task/task.index";
-    }
 
     /**
      * 列表
+     *
      * @return
      */
-    @PostMapping(value="/list")
-    @ResponseBody
-    public Map<String, List<TaskModel>> list(){
-        List<TaskModel> list =  taskService.findAll();
-        Map<String, List<TaskModel>> resultMap = new HashMap<>(1);
-        resultMap.put("data" , list);
+    @PostMapping("/list")
+    public Map<String, List<Task>> list() {
+        List<Task> list = taskService.findAll();
+        Map<String, List<Task>> resultMap = new HashMap<>(1);
+        resultMap.put("data", list);
         return resultMap;
     }
 
     /**
      * 保存
+     *
      * @param json
      * @return
      */
     @PostMapping(value = "/save")
-    @ResponseBody
-    public BaseResult save(@RequestBody String json){
-        DataxRDBMSConfigModel model = JSON.parseObject(json, new TypeReference<DataxRDBMSConfigModel>(){});
-        if(StringUtils.isAnyBlank(model.getReader(), model.getWriter(),
-                model.getReaderDsId(),model.getWriterDsId(),model.getWriteMode(),
-                model.getWriterTableName(),
-                model.getTaskSaveName())){
-            return new BaseResult(false, "-1", "参数验证失败");
+    public Result save(@RequestBody String json) {
+        DataxRDBMSConfigDto dataxRDBMSConfigDto = JSON.parseObject(json, new TypeReference<DataxRDBMSConfigDto>() {
+        });
+        if (StringUtils.isAnyBlank(dataxRDBMSConfigDto.getReader(), dataxRDBMSConfigDto.getWriter(),
+                dataxRDBMSConfigDto.getReaderDsId(), dataxRDBMSConfigDto.getWriterDsId(), dataxRDBMSConfigDto.getWriteMode(),
+                dataxRDBMSConfigDto.getWriterTableName(),
+                dataxRDBMSConfigDto.getTaskSaveName())) {
+            return new Result(false, -1, "缺少必要参数");
         }
-        if(model.getWriterColumns().length == 0){
-            return new BaseResult(false, "-1", "参数验证失败");
+        if (dataxRDBMSConfigDto.getWriterColumns().length == 0) {
+            return new Result(false, -1, "参数验证失败");
         }
-        if(StringUtils.isBlank(model.getQuerySql())){
-            if(StringUtils.isBlank(model.getReaderTableName())){
-                return new BaseResult(false, "-1", "参数验证失败");
+        if (StringUtils.isBlank(dataxRDBMSConfigDto.getQuerySql())) {
+            if (StringUtils.isBlank(dataxRDBMSConfigDto.getReaderTableName())) {
+                return new Result(false, -1, "参数验证失败");
             }
-            if(model.getReaderColumns().length == 0){
-                return new BaseResult(false, "-1", "参数验证失败");
+            if (dataxRDBMSConfigDto.getReaderColumns().length == 0) {
+                return new Result(false, -1, "参数验证失败");
             }
         }
-        return taskService.save(model);
+        return taskService.saveTask(dataxRDBMSConfigDto);
     }
 
     /**
      * 删除
+     *
      * @param taskIds
      * @return
      */
     @PostMapping(value = "/del")
-    @ResponseBody
-    public BaseResult del(@RequestParam String taskIds){
-        return taskService.del(taskIds);
+    public Result del(@RequestParam String taskIds) {
+        return new Result(taskService.removeByIds(Arrays.asList(taskIds.split(","))));
     }
 
     /**
      * 任务执行
+     *
      * @param taskIds
      * @return
      */
     @PostMapping(value = "/excute")
     @ResponseBody
-    public BaseResult excute(@RequestParam String taskIds, @RequestParam String nodeId){
+    public Result excute(@RequestParam String taskIds, @RequestParam String nodeId) {
         return taskService.excute(taskIds, nodeId);
     }
 }

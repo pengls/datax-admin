@@ -1,7 +1,8 @@
 package com.dragon.datax.mapper;
 
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.dragon.datax.model.Node;
+import com.dragon.datax.model.Dts;
 
 /**
  * @ClassName DtsMapper
@@ -10,6 +11,6 @@ import com.dragon.datax.model.Node;
  * @Description dao层
  * @Version 1.0
  */
-public interface NodeMapper extends BaseMapper<Node> {
+public interface DtsMapper extends BaseMapper<Dts> {
 
 }

@@ -111,7 +111,7 @@
                                     <select class="form-control" style="width: 100%;" id="readerDsId">
                                         <option value="-1">选择数据源</option>
                                         <#list dtslist as item>
-                                            <option value="${item.dsId}">${item.dsDesc}(${item.dsType})</option>
+                                            <option value="${item.id}">${item.name}(${item.dbType})</option>
                                         </#list>
                                     </select>
                                 </div>
@@ -161,8 +161,8 @@
                                     <label>推送节点</label>
                                     <div class="col-sm-12">
                                         <#list nodelist as item>
-                                            <input type="checkbox" name="pushNodes" data-flag="icheck" class="square-blue" value="${item.nodeId}"/>
-                                            ${item.nodeIp}
+                                            <input type="checkbox" name="pushNodes" data-flag="icheck" class="square-blue" value="${item.id}"/>
+                                            ${item.ip}
                                         </#list>
                                     </div>
                                 </div>
@@ -221,7 +221,7 @@
                                     <select class="form-control" style="width: 100%;" id="writerDsId">
                                         <option value="-1">选择数据源</option>
                                         <#list dtslist as item>
-                                            <option value="${item.dsId}">${item.dsDesc}(${item.dsType})</option>
+                                            <option value="${item.id}">${item.name}(${item.dbType})</option>
                                         </#list>
                                     </select>
                                 </div>
@@ -274,8 +274,8 @@
                                     <label>执行节点</label>
                                     <div class="col-sm-12">
                                         <#list nodelist as item>
-                                            <input type="radio" name="excuteNodes" data-flag="icheck" class="square-blue" value="${item.nodeId}"/>
-                                            ${item.nodeIp}<br/>
+                                            <input type="radio" name="excuteNodes" data-flag="icheck" class="square-blue" value="${item.id}"/>
+                                            ${item.ip}<br/>
                                         </#list>
                                     </div>
                                 </div>

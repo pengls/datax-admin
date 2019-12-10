@@ -7,7 +7,6 @@ package com.dragon.datax.util;
  * @Description 相关常量
  * @Version 1.0
  */
-public class DataxConstant {
-
-
+public interface DataxConstant {
+    public static final int SSH_CON_TIMEOUT = 6000;
 }

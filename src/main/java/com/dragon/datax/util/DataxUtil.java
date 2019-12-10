@@ -1,5 +1,6 @@
 package com.dragon.datax.util;
 
+import com.dragon.datax.dto.DataOperResultDto;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -7,7 +8,7 @@ import java.util.List;
  * @ClassName DataxUtil
  * @Author pengl
  * @Date 2018/11/27 19:39
- * @Description TODO
+ * @Description 工具类
  * @Version 1.0
  */
 public class DataxUtil {
@@ -20,8 +21,8 @@ public class DataxUtil {
      * @Param:
      * @Return:
      **/
-    public static DataOperResult parseDataXConsole(List<String> consoles) {
-        DataOperResult dataOperResult = new DataOperResult();
+    public static DataOperResultDto parseDataXConsole(List<String> consoles) {
+        DataOperResultDto dataOperResult = new DataOperResultDto();
         boolean flag = false;
         String except = "";
         for (String cons : consoles) {
@@ -66,16 +67,16 @@ public class DataxUtil {
 
         if (!flag) {
             String now = System.currentTimeMillis() + "";
-            dataOperResult = new DataOperResult("", "", "2", now, now, "0", "0", "0", "0", "0", except);
+            dataOperResult = new DataOperResultDto("-1", now, now, "0", "0", "0", "0", "0", except);
         }
         return dataOperResult;
     }
 
     public static String date2TimeStamp(String date_str, String format) {
-        try{
+        try {
             SimpleDateFormat sdf = new SimpleDateFormat(format);
             return String.valueOf(sdf.parse(date_str).getTime());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "";

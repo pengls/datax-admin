@@ -5,10 +5,11 @@
  */
 (function ($, window, document) {
     window.common = window.common || {};
+    window.localStore = window.localStore || {};
 
     /** 获取项目根路径 **/
     common.root = function(){
-        return "/datax-admin";
+        return "";
     };
     /**
      * @Description：模态消息提示框（正常大小）
@@ -111,6 +112,59 @@
         common.initSelect2();
         common.initTooltip
     };
+
+    /**
+     * 皮肤列表
+     */
+    var mySkins = [
+        'skin-blue',
+        'skin-black',
+        'skin-red',
+        'skin-yellow',
+        'skin-purple',
+        'skin-green',
+        'skin-blue-light',
+        'skin-black-light',
+        'skin-red-light',
+        'skin-yellow-light',
+        'skin-purple-light',
+        'skin-green-light'
+    ];
+
+    common.changeSkin = function (cls) {
+        $.each(mySkins, function (i) {
+            $('body').removeClass(mySkins[i])
+        })
+
+        $('body').addClass(cls)
+        localStore.store('skin', cls)
+        return false
+    }
+
+    localStore.store = function(name, val){
+        if (typeof (Storage) !== 'undefined') {
+            localStorage.setItem(name, val)
+        } else {
+            window.alert('Please use a modern browser to properly view this template!')
+        }
+    }
+
+    localStore.get = function(name) {
+        if (typeof (Storage) !== 'undefined') {
+            return localStorage.getItem(name)
+        } else {
+            window.alert('Please use a modern browser to properly view this template!')
+        }
+    }
+
+    /**
+     * 换肤功能
+     */
+    var skin = localStore.get('skin');
+    if (skin && $.inArray(skin, mySkins)){
+        common.changeSkin(skin)
+    }
+
 })(jQuery, window, document);
 
 var loadi;

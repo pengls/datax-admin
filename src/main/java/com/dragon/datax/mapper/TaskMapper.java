@@ -1,48 +1,17 @@
 package com.dragon.datax.mapper;
 
-import com.dragon.datax.model.TaskModel;
-
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.dragon.datax.model.Task;
 import java.util.List;
 
 /**
  * @ClassName TaskMapper
  * @Author pengl
  * @Date 2018/11/23 9:30
- * @Description TODO
+ * @Description dao层
  * @Version 1.0
  */
-public interface TaskMapper {
-    /**
-     * 查询任务列表
-     * @return
-     */
-    List<TaskModel> findAll();
+public interface TaskMapper extends BaseMapper<Task> {
 
-    /**
-     * 插入任务
-     * @param taskModel
-     * @return
-     */
-    int insertTask(TaskModel taskModel);
-
-    /**
-     * 删除任务
-     * @param id
-     * @return
-     */
-    int delTaskById(String id);
-
-    /**
-     * 更新任务
-     * @param taskModel
-     * @return
-     */
-    int updateTaskById(TaskModel taskModel);
-
-    /**
-     * 通过ID查询任务
-     * @param taskId
-     * @return
-     */
-    TaskModel findById(String taskId);
+    List<Task> findAll();
 }

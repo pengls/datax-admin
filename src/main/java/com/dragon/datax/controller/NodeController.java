@@ -1,8 +1,17 @@
 package com.dragon.datax.controller;
 
+import cn.hutool.core.util.IdUtil;
+import com.dragon.boot.common.model.Result;
+import com.dragon.datax.model.Node;
+import com.dragon.datax.service.NodeService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import cn.hutool.crypto.symmetric.DES;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName DtController
@@ -11,43 +20,38 @@ import java.util.HashMap;
  * @Description 节点管理
  * @Version 1.0
  */
-@Controller
+@RestController
 @RequestMapping("node")
 public class NodeController {
     @Autowired
     private NodeService nodeService;
-
-    /**
-     * 首页
-     * @return
-     */
-    @RequestMapping("")
-    public String index(){
-        return "node/node.index";
-    }
+    @Autowired
+    private DES des;
 
     /**
      * 列表
      * @return
      */
     @PostMapping(value="/list")
-    @ResponseBody
-    public Map<String, List<NodeModel>> list(){
-        List<NodeModel> list =  nodeService.findAll();
-        Map<String, List<NodeModel>> resultMap = new HashMap<>(1);
+    public Map<String, List<Node>> list(){
+        List<Node> list =  nodeService.list();
+        Map<String, List<Node>> resultMap = new HashMap<>(1);
         resultMap.put("data" , list);
         return resultMap;
     }
 
     /**
      * 保存
-     * @param nodeModel
+     * @param node
      * @return
      */
     @PostMapping(value = "/save")
-    @ResponseBody
-    public BaseResult save(@ModelAttribute NodeModel nodeModel){
-        return nodeService.save(nodeModel);
+    public Result save(@ModelAttribute Node node){
+        //node.setPass(des.encryptHex(node.getPass()));
+        if(StringUtils.isBlank(node.getId())){
+            node.setId(IdUtil.fastSimpleUUID());
+        }
+        return new Result(nodeService.saveOrUpdate(node));
     }
 
     /**
@@ -56,9 +60,8 @@ public class NodeController {
      * @return
      */
     @PostMapping(value = "/del")
-    @ResponseBody
-    public BaseResult del(@RequestParam String nodeIds){
-        return nodeService.del(nodeIds);
+    public Result del(@RequestParam String nodeIds){
+        return new Result(nodeService.removeByIds(Arrays.asList(nodeIds.split(","))));
     }
 
     /**
@@ -67,9 +70,18 @@ public class NodeController {
      * @return
      */
     @PostMapping(value = "/test")
-    @ResponseBody
-    public BaseResult testNode(@RequestParam String nodeId){
+    public Result testNode(@RequestParam String nodeId){
         return nodeService.testNode(nodeId);
     }
 
+    /**
+     * 在线安装datax环境
+     * TODO 没啥意义
+     * @param nodeIds
+     * @return
+     */
+    @PostMapping(value = "/install")
+    public Result installDatax(@RequestParam String nodeIds){
+        return null;
+    }
 }

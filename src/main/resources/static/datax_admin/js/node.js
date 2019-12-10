@@ -23,7 +23,7 @@
         }
         var dsId = checkResult[0];
         var rowData = dtable.getCheckRowData('nodeTable', dsId);
-        $("#nodeInfoTitle").html("编辑节点【"+rowData.dsId+"】");
+        $("#nodeInfoTitle").html("编辑节点【"+rowData.ip+"】");
         fixFormData(rowData);
         lockForm();
         $("#nodeWin").modal('show');
@@ -39,11 +39,11 @@
             return false;
         }
         var nodeId = checkResult[0];
-        $.post(rootPath + "/node/test",{nodeId : nodeId}, function (data) {
-            if(data.flag){
+        $.post(rootPath + "/node/test",{nodeId : nodeId}, function (res) {
+            if(res.flag){
                 common.alertSuc('节点连接成功');
             }else{
-                common.alertError(data.msg);
+                common.alertError(res.resMsg);
             }
         }, "json");
 
@@ -53,14 +53,14 @@
     node.save = function() {
         var formData = getFormData();
         if(verifyFormData(formData)){
-            $.post(rootPath + "/node/save", formData,  function (data) {
-                if(data.flag){
+            $.post(rootPath + "/node/save", formData,  function (res) {
+                if(res.data){
                     common.alertSuc('节点保存成功', function () {
                         $("#nodeWin").modal('hide');
                         dtable.reload(table);
                     });
                 }else{
-                    common.alertError(data.msg);
+                    common.alertError(res.resMsg);
                 }
             }, "json");
         }
@@ -77,7 +77,7 @@
         }, function(){
             $.post(rootPath + "/node/del",{nodeIds : checkResult.join(',')}, function (data) {
                 if(data.flag){
-                    common.alertSuc('成功删除：'+ data.msg + '个节点', function () {
+                    common.alertSuc('成功删除节点', function () {
                         dtable.reload(table);
                     });
                 }else{
@@ -103,14 +103,14 @@
                 type :"POST"
             },
             "columns": [
-                { "data": "nodeId"},
-                { "data": "nodeIp"},
-                { "data": "nodePort"},
-                { "data": "nodeType"},
-                { "data": "nodeLoginUser"},
-                { "data": "nodeLoginPass"},
-                { "data": "nodeStatus"},
-                { "data": "nodeDefaultPath"}
+                { "data": "id"},
+                { "data": "ip"},
+                { "data": "port"},
+                { "data": "type"},
+                { "data": "user"},
+                { "data": "pass"},
+                { "data": "status"},
+                { "data": "defaultPath"}
             ],
             "columnDefs": [
                 {
@@ -153,45 +153,45 @@
     }
     //填充表单
     function fixFormData(data) {
-        $("#primKey").val(data.nodeId);
-        $("#nodeIp").val(data.nodeIp);
-        $("#nodePort").val(data.nodePort);
-        $("#nodeLoginUser").val(data.nodeLoginUser);
-        $("#nodeLoginPass").val(data.nodeLoginPass);
-        $("#nodeDefaultPath").val(data.nodeDefaultPath);
-        $("#nodeDataxPath").val(data.nodeDataxPath);
-        $(":radio[name='nodeType'][value='"+data.nodeType+"']").iCheck('check');
-        $(":radio[name='nodeStatus'][value='"+data.nodeStatus+"']").iCheck('check');
+        $("#primKey").val(data.id);
+        $("#nodeIp").val(data.ip);
+        $("#nodePort").val(data.port);
+        $("#nodeLoginUser").val(data.user);
+        $("#nodeLoginPass").val(data.pass);
+        $("#nodeDefaultPath").val(data.defaultPath);
+        $("#nodeDataxPath").val(data.dataxPath);
+        $(":radio[name='nodeType'][value='"+data.type+"']").iCheck('check');
+        $(":radio[name='nodeStatus'][value='"+data.status+"']").iCheck('check');
     }
     //获取表单数据
     function getFormData() {
         return {
-            nodeId : $("#primKey").val(),
-            nodeIp : $("#nodeIp").val(),
-            nodePort : $("#nodePort").val(),
-            nodeLoginUser : $("#nodeLoginUser").val(),
-            nodeLoginPass : $("#nodeLoginPass").val(),
-            nodeType : $(":radio[name='nodeType']:checked").val(),
-            nodeStatus : $(":radio[name='nodeStatus']:checked").val(),
-            nodeDefaultPath : $("#nodeDefaultPath").val() || '/',
-            nodeDataxPath : $("#nodeDataxPath").val()
+            id : $("#primKey").val(),
+            ip : $("#nodeIp").val(),
+            port : $("#nodePort").val(),
+            user : $("#nodeLoginUser").val(),
+            pass : $("#nodeLoginPass").val(),
+            type : $(":radio[name='nodeType']:checked").val(),
+            status : $(":radio[name='nodeStatus']:checked").val(),
+            defaultPath : $("#nodeDefaultPath").val() || '/',
+            dataxPath : $("#nodeDataxPath").val()
         }
     }
     //表单验证
     function verifyFormData(formData) {
-        if(formData.nodeIp.trim().length == 0){
+        if(formData.ip.trim().length == 0){
             common.alertError('请填写节点IP！');
             return false;
         }
-        if(formData.nodePort.trim().length == 0){
+        if(formData.port.trim().length == 0){
             common.alertError('请填写节点端口！');
             return false;
         }
-        if(formData.nodeLoginUser.trim().length == 0){
+        if(formData.user.trim().length == 0){
             common.alertError('请填写登录用户名！');
             return false;
         }
-        if(formData.nodeLoginPass.trim().length == 0){
+        if(formData.pass.trim().length == 0){
             common.alertError('请填写登录密码！');
             return false;
         }

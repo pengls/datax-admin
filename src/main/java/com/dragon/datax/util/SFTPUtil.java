@@ -1,11 +1,12 @@
 package com.dragon.datax.util;
 
 import cn.hutool.core.io.IoUtil;
-import com.alibaba.fastjson.JSON;
+import com.dragon.datax.dto.DataOperResultDto;
 import com.jcraft.jsch.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,11 +46,11 @@ public class SFTPUtil {
      * @return
      * @throws JSchException
      */
-    public void connect() throws JSchException {
+    public void connect(int timeout) throws JSchException {
         JSch jsch = new JSch();
         session = jsch.getSession(ftpUserName, ftpHost, ftpPort);
         session.setPassword(ftpPassword);
-        session.setTimeout(60 * 1000);
+        session.setTimeout(timeout);
         Properties config = new Properties();
         config.put("StrictHostKeyChecking", "no");
         session.setConfig(config);
@@ -63,7 +64,7 @@ public class SFTPUtil {
      * @param text       要上传的文本
      * @throws JSchException
      */
-    public boolean uploadText(String remotePath, String text) throws JSchException, IOException {
+    public boolean uploadText(String remotePath, String text){
         InputStream is = IoUtil.toStream(text, StandardCharsets.UTF_8.name());
         try {
             String[] pathAndFileName = getFilePathAndFileName(remotePath);
@@ -157,13 +158,13 @@ public class SFTPUtil {
      * @param command
      * @return
      */
-    public DataOperResult execCmd(String command) throws JSchException, IOException{
+    public DataOperResultDto execCmd(String command) throws JSchException, IOException{
         String now = System.currentTimeMillis() + "";
         if(StringUtils.isBlank(command)){
-            return new DataOperResult("", "", "2", now, now, "0", "0", "0", "0", "0", "执行命令为空");
+            return new DataOperResultDto("-1", now, now, "0", "0", "0", "0", "0", "执行命令为空");
         }
         if(session == null){
-            return new DataOperResult("", "", "2", now, now, "0", "0", "0", "0", "0", "session对象为空");
+            return new DataOperResultDto("-1", now, now, "0", "0", "0", "0", "0", "session对象为空");
         }
         LOGGER.info( "===>>开始执行远程Shell命令:" + command);
         int returnCode  = -1;
@@ -187,7 +188,7 @@ public class SFTPUtil {
         }
         LOGGER.info( "远程Shell命令执行完成：" + returnCode );
         exeChannel.disconnect();
-        DataOperResult dataOperResult = DataxUtil.parseDataXConsole(consoles);
+        DataOperResultDto dataOperResult = DataxUtil.parseDataXConsole(consoles);
         dataOperResult.setOperResult(returnCode + "");
         return dataOperResult;
     }
