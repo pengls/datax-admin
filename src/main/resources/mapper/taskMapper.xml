@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.datax.mapper.TaskMapper" >
+ 
+     <select id="findAll" resultType="com.dragon.datax.model.Task">
+         SELECT
+             t.id,
+             t.name,
+             t.remark,
+             t.reader_ds_id,
+             t.writer_ds_id,
+             (select s.name from dts s where s.id = t.reader_ds_id)reader_ds_name,
+             (select s.name from dts s where s.id = t.writer_ds_id)writer_ds_name,
+             t.content,
+             status,
+             create_time,
+             update_time,
+             task_save_name
+         FROM
+            task t
+         WHERE
+             del_status = 0
+         ORDER BY
+            update_time DESC
+     </select>
+</mapper>
