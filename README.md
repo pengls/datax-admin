@@ -11,7 +11,4 @@ datax-admin是一个基于datax 3.0的数据同步管理平台，便于配置dat
 
 ![task1](imgs/task1.png)
 ![dts1](imgs/dts1.png)
-![task3](imgs/task3.png)
 ![node1](imgs/node1.png)
-![task2](imgs/task2.png)
-
